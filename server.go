@@ -1,28 +1,32 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/vbcm/easynvest.focus/models"
+	"github.com/vbcm/easynvest.focus/controllers"
+	mgo "gopkg.in/mgo.v2"
 )
 
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/chart", func(w http.ResponseWriter, req *http.Request) {
-		c := models.Chart{
-			Labels:       []string{"jan", "fev", "abr", "maio"},
-			Custody:      []float32{1, 2, 3, 4},
-			Accomplished: []float32{1, 2, 3, 4},
-			Meta:         []float32{1, 2, 3, 4},
-		}
+	cc := controllers.NewChartController(getSession())
 
-		json.NewEncoder(w).Encode(c)
-
-	}).Methods("GET")
+	router.HandleFunc("/chart/{id}", cc.Get).Methods("GET")
+	router.HandleFunc("/chart/feed", cc.Feed).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
+}
+
+func getSession() *mgo.Session {
+	// Connect to our local mongo
+	s, err := mgo.Dial("mongodb://focus:focus@ds153494.mlab.com:53494/focus")
+
+	// Check if connection error, is mongo running?
+	if err != nil {
+		panic(err)
+	}
+	return s
 }
