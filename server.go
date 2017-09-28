@@ -13,9 +13,11 @@ func main() {
 	router := mux.NewRouter()
 
 	cc := controllers.NewChartController(getSession())
+	mc := controllers.NewMetaController(getSession())
 
 	router.HandleFunc("/chart/{id}", cc.Get).Methods("GET")
 	router.HandleFunc("/chart/feed", cc.Feed).Methods("POST")
+	router.HandleFunc("/meta", mc.Post).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
