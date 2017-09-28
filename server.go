@@ -24,7 +24,7 @@ func main() {
 
 func getSession() *mgo.Session {
 	// Connect to our local mongo
-	s, err := mgo.Dial("mongodb://focus:focus@ds153494.mlab.com:53494/focus")
+	s, err := mgo.Dial("CONNECTION_HERE")
 
 	// Check if connection error, is mongo running?
 	if err != nil {
